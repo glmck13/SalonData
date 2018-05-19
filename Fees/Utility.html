@@ -1,0 +1,22 @@
+<html>
+
+<head>
+<title>Fees Utility</title>
+</head>
+
+<body>
+
+<form action="/Franchise/mdcUtil.cgi?Action=Process+Fees" target="stdout" method="post" enctype="multipart/form-data">
+	<input type="submit" name="Action" value="Process Fees File" />
+	<p>Fees PDF File: <input type="file" name="pdffile" /></p>
+</form>
+
+<form action="/Franchise/mdcUtil.cgi" target="stdout" method="get">
+	<input type="submit" name="Action" value="Archive Fees Results" />
+	<input type="submit" name="Action" value="Delete Fees Results" />
+	<input type="reset" name="Reset" value="Reset Form" />
+</form>
+
+</body>
+
+</html>

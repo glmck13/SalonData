@@ -1,0 +1,22 @@
+<html>
+
+<head>
+<title>PTO Utility</title>
+</head>
+
+<body>
+
+<form action="/Franchise/mdcUtil.cgi?Action=Process+PTO" target="stdout" method="post" enctype="multipart/form-data">
+	<input type="submit" name="Action" value="Process PTO File" />
+	<p>PTO PDF File: <input type="file" name="pdffile" /></p>
+</form>
+
+<form action="/Franchise/mdcUtil.cgi" target="stdout" method="get">
+	<input type="submit" name="Action" value="Archive PTO Results" />
+	<input type="submit" name="Action" value="Delete PTO Results" />
+	<input type="reset" name="Reset" value="Reset Form" />
+</form>
+
+</body>
+
+</html>

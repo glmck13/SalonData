@@ -1,0 +1,22 @@
+<html>
+
+<head>
+<title>Mincut Utility</title>
+</head>
+
+<body>
+
+<form action="/Franchise/mdcUtil.cgi?Action=Process+Mincut" target="stdout" method="post" enctype="multipart/form-data">
+	<input type="submit" name="Action" value="Process Mincut File" />
+	<p>Mincut PDF File: <input type="file" name="pdffile" /></p>
+</form>
+
+<form action="/Franchise/mdcUtil.cgi" target="stdout" method="get">
+	<input type="submit" name="Action" value="Archive Mincut Results" />
+	<input type="submit" name="Action" value="Delete Mincut Results" />
+	<input type="reset" name="Reset" value="Reset Form" />
+</form>
+
+</body>
+
+</html>

@@ -1,0 +1,22 @@
+<html>
+
+<head>
+<title>Sales Utility</title>
+</head>
+
+<body>
+
+<form action="/Franchise/mdcUtil.cgi?Action=Process+Sales" target="stdout" method="post" enctype="multipart/form-data">
+	<input type="submit" name="Action" value="Process Sales File" />
+	<p>Sales PDF File: <input type="file" name="pdffile" /></p>
+</form>
+
+<form action="/Franchise/mdcUtil.cgi" target="stdout" method="get">
+	<input type="submit" name="Action" value="Archive Sales Results" />
+	<input type="submit" name="Action" value="Delete Sales Results" />
+	<input type="reset" name="Reset" value="Reset Form" />
+</form>
+
+</body>
+
+</html>
