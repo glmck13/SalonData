@@ -123,11 +123,11 @@ ProcessEmployee ()
 	# [ ! "$_REGH" ] && return
 	[ "$_TOTHRS" -eq 0 ] && return
 	[ "$FILE" -eq 0 ] && return
-#	print "$COCODE,$STORENO,$FILE,$STORENO,\"$EMP\",\"00$STORENO\",,A,$ADMINH,C,$VACH,H,$HOLH,U,$TRAINH"
+#	print "$COCODE,$STORENO,$FILE,$STORENO,\"$EMP\",\"00$STORENO\",,A,$ADMINH,PSL,$VACH,H,$HOLH,U,$TRAINH"
 #	print "$COCODE,$STORENO,$FILE,$STORENO,\"$EMP\",\"00$STORENO\",,,,,,,,,,O,$BONUS,V,$PROD,N,$INCEN,D,$SIXDAY"
 #	print "$COCODE,$STORENO,$FILE,$STORENO,\"$EMP\",\"00$STORENO\",$_REGH,,,,,,,,,,,,,,,,,T,$TotTips,$OTHRS,$OTX"
 	let _INCEN=$INCEN+$RETURN
-	print "$COCODE,$STORENO,$FILE,$STORENO,\"$EMP\",00$STORENO,,A,$ADMINH,C,$VACH,H,$HOLH,U,$TRAINH,,,,,,,,,,,,"
+	print "$COCODE,$STORENO,$FILE,$STORENO,\"$EMP\",00$STORENO,,A,$ADMINH,PSL,$VACH,H,$HOLH,U,$TRAINH,,,,,,,,,,,,"
 	print "$COCODE,$STORENO,$FILE,$STORENO,\"$EMP\",00$STORENO,,,,,,,,,,O,$BONUS,V,$PROD,N,$_INCEN,D,$SIXDAY,,,,"
 	print "$COCODE,$STORENO,$FILE,$STORENO,\"$EMP\",00$STORENO,$_REGH,,,,,,,,,,,,,,,,,T,$TotTips,$OTHRS,$OTX"
 	;;
