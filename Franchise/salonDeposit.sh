@@ -12,6 +12,9 @@ NUMSTORES=0
 while read data
 do
 	case "$data" in
+	GREATCLIPS*)
+		print $data | IFS="|" read x SALONUSER SALONPASS
+		;;
 	EMAIL*)
 		print $data | IFS="|" read x EMAIL
 		;;
@@ -31,6 +34,13 @@ do
 	esac
 done <$SALONDATA
 
+curl -s -H "Content-Type: application/json" -H "Auth-Type: Bearer" -d @- https://spectrum.salondata.com/public/auth <<EOF | read x Name x Value x
+{"username":"$SALONUSER", "password":"$SALONPASS"}
+EOF
+
+Name=${Name//\"/} Value=${Value//\"/}
+eval $Name="$Value"
+
 secs=$(date --date=$REPDATE +%s)
 [ "$REPDATE" != "yesterday" ] && let secs+=3600
 let delta="(5-$W+7)%7"; let secs="$secs+$delta*86400"
@@ -42,18 +52,45 @@ FB=$(date --date="$FRIDATE" +%b)
 FY=$(date --date="$FRIDATE" +%Y)
 
 MESSAGE="STORE:CASH:CHARGE\r"
+typeset -F2 CASH CHARGE
 
 n=-1
-while true
+[ "$token" ] && while true
 do
 	let n=$n+1; [ "$n" -ge "$NUMSTORES" ] && break
 
-	print "${STORE[$n]}" | IFS="|" read x S P VMN VMV VPN VPV CN CV
+	print "${STORE[$n]}" | IFS="|" read x S x VMN VMV VPN VPV CN CV
 
-	MESSAGE+="$S" TMPFILE=/tmp/$S
+	MESSAGE+="${VMN:%%-*}" TMPFILE=/tmp/$S
 
-	curl -s -u $S:$P "https://www.salondata.com/$S/$FY/$FM($FB)/$FM-$FD/${S}D${M}${D}${Y#??}DAILYREP_.PDF" >$TMPFILE.pdf
-	pdftotext -layout $TMPFILE.pdf - 2>/dev/null | sed -e "s/  */ /g" | egrep "Cash & Check Deposit|Total Charges|Total Deposit" | tr '\n' ' ' | read x x x x x x x CASH x x x x x CHARGE x x x x x x x x x x TOTAL x
+	CASH=0 CHARGE=0
+
+	curl -s -H "Auth-Type: Bearer" -H "Authorization: Bearer $token" https://spectrum.salondata.com/rest/storeconfig/dailytendersummary?storeConfig=$S\&date=$Y-$M-$D >$TMPFILE.json
+	tr ',' '\n' <$TMPFILE.json | while read json
+	do
+		case $json in
+
+		*tenderAmount*)
+			json=${json//\"/} json=${json#*:}
+			tenderAmount=$json
+			;;
+
+		*tenderTypeId*)
+			json=${json//\"/} json=${json#*:}
+			tenderTypeId=$json
+			;;
+
+		*creditCard*)
+			json=${json//\"/} json=${json#*:}
+			creditCard=$json
+			if [ "$creditCard" = "true" ]; then
+				let CHARGE=$CHARGE+$tenderAmount
+			elif [ "$tenderTypeId" -le 2 ]; then
+				let CASH=$CASH+$tenderAmount
+			fi
+			;;
+		esac
+	done
 
 	>$TMPFILE.qbo
 
