@@ -11,6 +11,8 @@ W=$(date --date="$REPDATE" +%w)
 NUMSTORES=0
 while read data
 do
+	[[ "$data" == \#* ]] && continue
+	
 	case "$data" in
 	GREATCLIPS*)
 		print $data | IFS="|" read x SALONUSER SALONPASS
