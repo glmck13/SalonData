@@ -16,7 +16,7 @@ typeset -F2 totalHours=0 regularHours=0 \
 	receptionistHours=0 tipsComputedOld=0 sickHours=0 trainingHours=0 vacationHours=0 \
 	ADMIN_HRS_PAY=0 CLOSE_HRS_PAY=0 FLOATING_WAGE_PAY=0 FLOOR_HRS_PAY=0 INCENTIVE_PAY_PAY=0 \
 	OVERTIME_PAY=0 PRODUCT_BONUS_PAY=0 PRODUCTIVITY_PAY=0 RECEP_HRS_PAY=0 RETURN_BONUS_PAY=0 \
-	SIX_DAY_BONUS_PAY=0 TRAINING_HRS_PAY=0 VACA_HRS_PAY=0
+	SIX_DAY_BONUS_PAY=0 TRAINING_HRS_PAY=0 VACA_HRS_PAY=0 IR_PAY=0
 
 curl -s -H "Content-Type: application/json" -H "Auth-Type: Bearer" -d @- https://spectrum.salondata.com/public/auth <<EOF | read x Name x Value x
 {"username":"$SALONUSER", "password":"$SALONPASS"}
@@ -198,12 +198,6 @@ do
 done | LC_ALL=C sort | while read Id Employee Name Value
 do
 	if [[ "$Name" == \~* ]]; then
-#		print $Id, $Employee, $adminHours, $closingHours, $floorHours, $holidayHours, $overtimeHours, $personalHours, \
-#			$receptionistHours, $tipsComputedOld, $sickHours, $trainingHours, $vacationHours \
-#			$ADMIN_HRS_PAY, $CLOSE_HRS_PAY, $FLOATING_WAGE_PAY, $FLOOR_HRS_PAY, $INCENTIVE_PAY_PAY, \
-#			$OVERTIME_PAY, $PRODUCT_BONUS_PAY, $PRODUCTIVITY_PAY, $RECEP_HRS_PAY, $RETURN_BONUS_PAY, \
-#			$SIX_DAY_BONUS_PAY, $TRAINING_HRS_PAY, $VACA_HRS_PAY
-
 		let totalHours=$floorHours+$adminHours+$receptionistHours+$closingHours+$trainingHours+$vacationHours+$holidayHours
 		let regularHours=$floorHours+$receptionistHours+$closingHours
 
@@ -238,4 +232,4 @@ do
 	else
 		eval $Name="$Value"
 	fi
-done >$OUTFILE
+done >>$OUTFILE
