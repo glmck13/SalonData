@@ -1,6 +1,15 @@
 #!/bin/ksh
 
-print "$QUERY_STRING" | IFS='=+& ' read x Action Class x
+[ "$REQUEST_METHOD" = "POST" ] && read -r QUERY_STRING
+
+vars="$QUERY_STRING"
+while [ "$vars" ]
+do
+	print $vars | IFS='&' read v vars
+	[ "$v" ] && export ${v%%=*}="$(urlencode -d ${v#*=})"
+done
+
+Class=$Action Class=${Class#* } Class=${Class%% *}
 
 PATH=$PWD:$PATH
 export DISPLAY=":0"
@@ -22,6 +31,9 @@ if [[ "$Action" == Process* ]]; then
 	else
 		print "$PDF"
 	fi
+
+elif [[ "$Action" == Get* ]]; then
+	$Class.sh
 
 elif [ ! "$(ls)" ]; then
 	print "Folder is empty"
