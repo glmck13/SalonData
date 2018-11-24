@@ -5,7 +5,6 @@ Seed=2018-11-02
 
 secs=$(date "+%s")
 secshi=$(date --date="$Seed" "+%s")
-secslo=$secshi
 
 while true
 do
