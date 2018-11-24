@@ -1,0 +1,41 @@
+<html>
+
+<head>
+<title>Payroll Utility</title>
+</head>
+
+<body>
+
+<form action="/Franchise/mdcUtil.cgi" target="stdout">
+<input type="submit" name="Action" value="Get Payroll" />
+<!--#exec cmd="./payweek.sh" -->
+</form>
+
+<form action="/Franchise/mdcUtil.cgi" target="stdout" method="get">
+	<input type="submit" name="Action" value="Archive Payroll Results" />
+	<input type="submit" name="Action" value="Delete Payroll Results" />
+	<input type="reset" name="Reset" value="Reset Form" />
+</form>
+
+<hr>
+
+<a href="/Franchise/empUtil.cgi" target="stdout">Click here</a>
+to view employee list
+
+<form action="/Franchise/empUtil.cgi" target="stdout" method="get">
+	File #: <input type=text size=4 name="Fileno" />
+	<br>
+	Employee Name: <input type=text size=20 name="Ename" />
+	<br>
+	ADP Name: <input type=text size=20 name="Aname" />
+	<br>
+	Mgr Code: <input type=text size=1 name="Mgr" />
+	<br>
+	<input type="submit" name="Command" value="Add Employee" />
+	<input type="submit" name="Command" value="Delete Employee" />
+	<input type="reset" name="Reset" value="Reset Form" />
+</form>
+
+</body>
+
+</html>
