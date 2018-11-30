@@ -3,8 +3,8 @@
 print ${PayWeek:?} | IFS="," read WeekLo WeekMid WeekHi
 
 COCODE="D5L"
-OUTFILE=$WeekHi.csv
-[ ! "$DBASE" ] && DBASE="../DBase"
+OUTFILE=$Class-$WeekHi.csv
+[ ! "$DBASE" ] && DBASE="../../DBase"
 
 grep "^%LOGIN%|" $DBASE/EMPTAB.csv | IFS="|" read x SALONUSER x x
 grep "^%PASSWORD%|" $DBASE/EMPTAB.csv | IFS="|" read x SALONPASS x x
