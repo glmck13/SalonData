@@ -1,7 +1,7 @@
 #!/bin/ksh
 
 PATH=$PWD:$PATH
-export DBASE=Payroll/DBase; cd $DOCUMENT_ROOT/$DBASE
+export DBASE=./DBase; cd $DOCUMENT_ROOT/$DBASE
 export EMPTAB=EMPTAB.csv
 export TMPTAB=/tmp/tab$$
 
