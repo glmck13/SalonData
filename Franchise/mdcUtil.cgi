@@ -9,7 +9,7 @@ do
 	[ "$v" ] && export ${v%%=*}="$(urlencode -d ${v#*=})"
 done
 
-Class=$Action Class=${Class#* } Class=${Class%% *}
+export Class=$Action Class=${Class#* } Class=${Class%% *}
 
 PATH=$PWD:$PATH
 export DISPLAY=":0"
