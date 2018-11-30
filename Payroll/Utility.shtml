@@ -11,7 +11,7 @@
 <!--#exec cmd="./payweek.sh" -->
 </form>
 
-<form action="/Franchise/mdcUtil.cgi" target="stdout" method="get">
+<form action="/Franchise/mdcUtil.cgi" target="stdout">
 	<input type="submit" name="Action" value="Archive Payroll Results" />
 	<input type="submit" name="Action" value="Delete Payroll Results" />
 	<input type="reset" name="Reset" value="Reset Form" />
