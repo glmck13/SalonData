@@ -33,7 +33,7 @@ if [[ "$Action" == Process* ]]; then
 	fi
 
 elif [[ "$Action" == Get* ]]; then
-	$Class.sh
+	$Class.sh; print "Completed"
 
 elif [ ! "$(ls)" ]; then
 	print "Folder is empty"
