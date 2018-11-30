@@ -6,8 +6,8 @@ COCODE="D5L"
 OUTFILE=$WeekHi.csv
 [ ! "$DBASE" ] && DBASE="../DBase"
 
-grep "^=LOGIN=|" $DBASE/EMPTAB.csv | IFS="|" read x SALONUSER x x
-grep "^=PASSWORD=|" $DBASE/EMPTAB.csv | IFS="|" read x SALONPASS x x
+grep "^%LOGIN%|" $DBASE/EMPTAB.csv | IFS="|" read x SALONUSER x x
+grep "^%PASSWORD%|" $DBASE/EMPTAB.csv | IFS="|" read x SALONPASS x x
 
 BonusLo=12.0 BonusHi=17.0
 
