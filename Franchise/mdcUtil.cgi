@@ -1,6 +1,6 @@
 #!/bin/ksh
 
-[ "$REQUEST_METHOD" = "POST" ] && read -r QUERY_STRING
+# [ "$REQUEST_METHOD" = "POST" ] && read -r QUERY_STRING
 
 vars="$QUERY_STRING"
 while [ "$vars" ]
