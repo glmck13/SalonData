@@ -44,7 +44,7 @@ curl -s -H "Auth-Type: Bearer" -H "Authorization: Bearer $token" "https://spectr
 
 python <<EOF
 
-import json
+import json, sys
 
 emp = {}
 
@@ -52,7 +52,10 @@ jfile = open("$EmpFile", "r")
 report=json.load(jfile)
 
 for r in report:
-    emp[r["storeEmployees"][0]["employeeId"]] = {"last" : r["lname"], "first" : r["fname"]}
+    emp[r["employeeId"]] = {"last" : r["lname"], "first" : r["fname"]}
+    #emp[r["storeEmployees"][0]["employeeId"]] = {"last" : r["lname"], "first" : r["fname"]}
+    for e in r["storeEmployees"]:
+        emp[e["employeeId"]] = {"last" : r["lname"], "first" : r["fname"]}
 
 jfile = open("$NameFile", "w")
 json.dump(emp, jfile)
@@ -62,7 +65,7 @@ curl -s -H "Auth-Type: Bearer" -H "Authorization: Bearer $token" "https://spectr
 
 python <<EOF
 
-import json
+import json, sys
 
 jfile=open("$HoursFile", "r")
 report=json.load(jfile)
@@ -139,7 +142,7 @@ curl -s -H "Auth-Type: Bearer" -H "Authorization: Bearer $token" "https://spectr
 
 python <<EOF
 
-import json
+import json, sys
 
 jfile=open("$PayFile", "r")
 report=json.load(jfile)
