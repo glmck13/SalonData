@@ -8,6 +8,8 @@ M=$(date --date="$REPDATE" +%m)
 Y=$(date --date="$REPDATE" +%Y)
 W=$(date --date="$REPDATE" +%w)
 
+o2Refresh.sh
+
 NUMSTORES=0
 while read data
 do
