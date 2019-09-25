@@ -14,7 +14,7 @@ NUMSTORES=0
 while read data
 do
 	[[ "$data" == \#* ]] && continue
-	
+
 	case "$data" in
 	GREATCLIPS*)
 		print $data | IFS="|" read x SALONUSER SALONPASS
@@ -153,11 +153,6 @@ do
 	MESSAGE+="\r"
 done
 
-export TERM=xterm
-expect >/dev/null <<EOF
-set timeout 120
-spawn alpine "$EMAIL"
-expect "To AddrBk"
-send "Salon Deposits for $M/$D/$Y\r$MESSAGE\rY"
-expect "Alpine finished"
-EOF
+SUBJECT="Salon Deposits for $M/$D/$Y"
+
+sendsms.sh "$EMAIL" "$SUBJECT" "$MESSAGE"
