@@ -1,5 +1,7 @@
 #!/bin/ksh
 
+PATH=$PWD:$HOME/bin:/usr/local/bin:$PATH
+
 SALONDATA=$HOME/etc/${QBO_SANDBOX}salonData.conf
 LOGFILE=/tmp/salon.log
 REPDATE=${1:-yesterday}
