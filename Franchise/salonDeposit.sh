@@ -157,4 +157,4 @@ done
 
 SUBJECT="Salon Deposits for $M/$D/$Y"
 
-sendsms.sh "$EMAIL" "$SUBJECT" "$MESSAGE"
+sendaway.sh "$EMAIL" "$SUBJECT" "$MESSAGE"
