@@ -47,16 +47,6 @@ EOF
 Name=${Name//\"/} Value=${Value//\"/}
 eval $Name="$Value"
 
-secs=$(date --date=$REPDATE +%s)
-[ "$REPDATE" != "yesterday" ] && let secs+=3600
-let delta="(5-$W+7)%7"; let secs="$secs+$delta*86400"
-FRIDATE=$(date --date=@$secs)
-
-FD=$(date --date="$FRIDATE" +%d)
-FM=$(date --date="$FRIDATE" +%m)
-FB=$(date --date="$FRIDATE" +%b)
-FY=$(date --date="$FRIDATE" +%Y)
-
 MESSAGE="STORE:CASH:CHARGE\r"
 typeset -F2 CASH CHARGE
 
