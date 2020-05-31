@@ -22,7 +22,7 @@ print "<html><pre>"
 
 if [[ "$Action" == Process* ]]; then
 
-	PDF=$(get-pdf.pl $DOCUMENT_ROOT/$RESULTS)
+	PDF=$(get-pdf.py $DOCUMENT_ROOT/$RESULTS)
 
 	if [[ "$PDF" == *.pdf ]]; then
 		pdf-to-txt.sh "$PDF"
