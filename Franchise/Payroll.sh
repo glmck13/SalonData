@@ -9,7 +9,9 @@ OUTFILE=$Class-$WeekHi.csv
 grep "^%LOGIN%|" $DBASE/EMPTAB.csv | IFS="|" read x SALONUSER x x
 grep "^%PASSWORD%|" $DBASE/EMPTAB.csv | IFS="|" read x SALONPASS x x
 
-BonusLo=12.0 BonusHi=17.0
+# Turn off bonus
+#BonusLo=12.0 BonusHi=17.0
+BonusLo=0.0 BonusHi=-1.0
 
 typeset -F2 totalHours=0 regularHours=0 \
 	adminHours=0 closingHours=0 floorHours=0 holidayHours=0 overtimeHours=0 personalHours=0 \
@@ -41,6 +43,7 @@ do
 [ ! "$Store" ] && continue
 
 curl -s -H "Auth-Type: Bearer" -H "Authorization: Bearer $token" "https://spectrum.salondata.com/rest/employee/reporting?storeIds=$Store&start=$WeekLo&end=$WeekHi" >$EmpFile
+#cp "$EmpFile" "${EmpFile%.*}-$Store"
 
 python <<EOF
 
@@ -55,13 +58,16 @@ for r in report:
     emp[r["employeeId"]] = {"last" : r["lname"], "first" : r["fname"]}
     #emp[r["storeEmployees"][0]["employeeId"]] = {"last" : r["lname"], "first" : r["fname"]}
     for e in r["storeEmployees"]:
-        emp[e["employeeId"]] = {"last" : r["lname"], "first" : r["fname"]}
+        id = e["employeeId"]
+	if id not in emp:
+            emp[id] = {"last" : r["lname"], "first" : r["fname"]}
 
 jfile = open("$NameFile", "w")
 json.dump(emp, jfile)
 EOF
 
 curl -s -H "Auth-Type: Bearer" -H "Authorization: Bearer $token" "https://spectrum.salondata.com/rest/storeconfig/dailyemployee?storeConfig=$Store&date%3E=$WeekLo&date%3C=$WeekHi" >$HoursFile
+#cp "$HoursFile" "${HoursFile%.*}-$Store"
 
 python <<EOF
 
