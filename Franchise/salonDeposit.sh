@@ -62,31 +62,25 @@ do
 	CASH=0 CHARGE=0
 
 	curl -s -H "Auth-Type: Bearer" -H "Authorization: Bearer $token" https://spectrum.salondata.com/rest/storeconfig/dailytendersummary?storeConfig=$S\&date=$Y-$M-$D >$TMPFILE.json
-	tr ',' '\n' <$TMPFILE.json | while read json
-	do
-		case $json in
 
-		*tenderAmount*)
-			json=${json//\"/} json=${json#*:}
-			tenderAmount=$json
-			;;
-
-		*tenderTypeId*)
-			json=${json//\"/} json=${json#*:}
-			tenderTypeId=$json
-			;;
-
-		*creditCard*)
-			json=${json//\"/} json=${json#*:}
-			creditCard=$json
-			if [ "$creditCard" = "true" ]; then
-				let CHARGE=$CHARGE+$tenderAmount
-			elif [ "$tenderTypeId" -le 2 ]; then
-				let CASH=$CASH+$tenderAmount
-			fi
-			;;
-		esac
-	done
+	eval $(
+	python <<-EOF
+	import json
+	tender = json.loads(open("$TMPFILE.json", "r").read())
+	cash=0
+	charge=0
+	for t in tender:
+	    pk = t["tenderType"]["objectId"]["idSnapshot"]["tendertypepk"]
+	    amt = float(t["tenderAmount"])
+	    if pk == 11:
+	        pass
+	    elif pk == 1:
+	        cash += amt
+	    else:
+	        charge += amt
+	print "CASH={} CHARGE={}".format(cash, charge)
+	EOF
+	)
 
 	>$TMPFILE.qbo
 
