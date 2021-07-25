@@ -43,7 +43,7 @@ do
 [ ! "$Store" ] && continue
 
 curl -s -H "Auth-Type: Bearer" -H "Authorization: Bearer $token" "https://spectrum.salondata.com/rest/employee/reporting?storeIds=$Store&start=$WeekLo&end=$WeekHi" >$EmpFile
-#cp "$EmpFile" "${EmpFile%.*}-$Store"
+cp "$EmpFile" "${EmpFile%.*}-$Store"
 
 python <<EOF
 
@@ -55,19 +55,21 @@ jfile = open("$EmpFile", "r")
 report=json.load(jfile)
 
 for r in report:
-    emp[r["employeeId"]] = {"last" : r["lname"], "first" : r["fname"]}
-    #emp[r["storeEmployees"][0]["employeeId"]] = {"last" : r["lname"], "first" : r["fname"]}
+    id = r["employeeId"]
+    if id and r["storeId"] == $Store:
+        emp[id] = {"last" : r["lname"], "first" : r["fname"]}
     for e in r["storeEmployees"]:
         id = e["employeeId"]
-	if id not in emp:
+        if id and e["storeConfig"]["objectId"]["idSnapshot"]["store_id"] == $Store:
             emp[id] = {"last" : r["lname"], "first" : r["fname"]}
 
 jfile = open("$NameFile", "w")
 json.dump(emp, jfile)
 EOF
+cp "$NameFile" "${NameFile%.*}-$Store"
 
 curl -s -H "Auth-Type: Bearer" -H "Authorization: Bearer $token" "https://spectrum.salondata.com/rest/storeconfig/dailyemployee?storeConfig=$Store&date%3E=$WeekLo&date%3C=$WeekHi" >$HoursFile
-#cp "$HoursFile" "${HoursFile%.*}-$Store"
+cp "$HoursFile" "${HoursFile%.*}-$Store"
 
 python <<EOF
 
