@@ -43,7 +43,7 @@ do
 [ ! "$Store" ] && continue
 
 curl -s -H "Auth-Type: Bearer" -H "Authorization: Bearer $token" "https://spectrum.salondata.com/rest/employee/reporting?storeIds=$Store&start=$WeekLo&end=$WeekHi" >$EmpFile
-cp "$EmpFile" "${EmpFile%.*}-$Store"
+#cp "$EmpFile" "${EmpFile%.*}-$Store"
 
 python <<EOF
 
@@ -66,10 +66,10 @@ for r in report:
 jfile = open("$NameFile", "w")
 json.dump(emp, jfile)
 EOF
-cp "$NameFile" "${NameFile%.*}-$Store"
+#cp "$NameFile" "${NameFile%.*}-$Store"
 
 curl -s -H "Auth-Type: Bearer" -H "Authorization: Bearer $token" "https://spectrum.salondata.com/rest/storeconfig/dailyemployee?storeConfig=$Store&date%3E=$WeekLo&date%3C=$WeekHi" >$HoursFile
-cp "$HoursFile" "${HoursFile%.*}-$Store"
+#cp "$HoursFile" "${HoursFile%.*}-$Store"
 
 python <<EOF
 
