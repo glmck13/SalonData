@@ -83,7 +83,8 @@ do
 		FREIGHT=${line#*: }
 		;;
 	@CLOTHING:*)
-		CLOTHING=${line#*: }
+		line=${line#*: }
+		[[ ${line} && ${line} != @* ]] && CLOTHING=${line}
 		;;
 	@RETURNS:*)
 		RETURNS=${line#*: }
