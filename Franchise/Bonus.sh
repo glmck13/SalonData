@@ -1,5 +1,7 @@
 #!/bin/ksh
 
+alias python=python3
+
 print ${PayWeek:?} | IFS="," read WeekLo WeekHi
 
 OUTFILE=$Class-$WeekHi.csv
@@ -19,7 +21,13 @@ StatsFile=/tmp/stats$$.json
 
 trap "rm -f $StatsFile" HUP INT TERM QUIT EXIT
 
-curl -s -H "Auth-Type: Bearer" -H "Authorization: Bearer $token" https://spectrum.salondata.com/rest/storeconfig/listx | tr '}[]' '\n' | sed -e "s/.*\"pk\"://" -e "s/,.*\"n\":\"/ /" -e "s/\".*//" | while read Store Salon
+StoreConfig=$(curl -s -H "Auth-Type: Bearer" -H "Authorization: Bearer $token" https://spectrum.salondata.com/rest/storeconfig/listx)
+python <<EOF | while read Store Salon
+import sys, json
+list = json.loads('$StoreConfig')
+for item in list:
+	print(item["pk"], item["n"])
+EOF
 do
 
 [ ! "$Store" ] && continue
@@ -55,7 +63,7 @@ totalPay = tally["adminPay"] + tally["bonusPay"] + tally["closingPay"] + tally["
 
 percentPayroll = totalPay/totalSales*100
 
-print "{},{:.2f},{},{:.2f},{:.1f}%".format("$Salon", totalSales, tally["customerCount"], totalPay, percentPayroll)
+print("{},{:.2f},{},{:.2f},{:.1f}%".format("$Salon", totalSales, tally["customerCount"], totalPay, percentPayroll))
 EOF
 
 done >$OUTFILE

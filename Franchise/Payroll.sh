@@ -1,5 +1,7 @@
 #!/bin/ksh
 
+alias python=python3
+
 print ${PayWeek:?} | IFS="," read WeekLo WeekMid WeekHi
 
 COCODE="D5L"
@@ -37,7 +39,13 @@ trap "rm -f $AvgFile $EmpFile $NameFile $HoursFile $PayFile" HUP INT TERM QUIT E
 
 cat $DBASE/HEADER.csv >$OUTFILE
 
-curl -s -H "Auth-Type: Bearer" -H "Authorization: Bearer $token" https://spectrum.salondata.com/rest/storeconfig/listx | tr '}[]' '\n' | sed -e "s/.*\"pk\"://" -e "s/,.*\"n\":\"/ /" -e "s/\".*//" | while read Store Salon
+StoreConfig=$(curl -s -H "Auth-Type: Bearer" -H "Authorization: Bearer $token" https://spectrum.salondata.com/rest/storeconfig/listx)
+python <<EOF | while read Store Salon
+import sys, json
+list = json.loads('$StoreConfig')
+for item in list:
+	print(item["pk"], item["n"])
+EOF
 do
 
 [ ! "$Store" ] && continue
@@ -129,11 +137,11 @@ for r in report:
     tally[key]["vacationHours"] += float(r["vacationHours"])
     tally[key]["tipsComputedOld"] += float(r["tipsComputedOld"]) + float(r["tips"])
 
-for t in tally.iteritems():
-    for k, v in t[1].iteritems():
-        print "$Salon" + "|" + emp[str(t[0][1])]["last"]+ "|" + emp[str(t[0][1])]["first"] +"|" + str(v) + "|" + k
+for x, t in tally.items():
+    for k, v in t.items():
+        print("$Salon" + "|" + emp[str(x[1])]["last"]+ "|" + emp[str(x[1])]["first"] +"|" + str(v) + "|" + k)
 
-for k, v in avg.iteritems():
+for k, v in avg.items():
     for a in v:
         if a["hcQty"] > 0:
             a["avg"] = float(a["hcTime"]*60 + a["hcSeconds"])/(a["hcQty"]*60)
@@ -196,8 +204,8 @@ for r in report:
 
         tally[(store_id, employeeId, "overtimeHours")] += day8
 
-for t in tally.iteritems():
-    print "$Salon" + "|" + emp[str(t[0][1])]["last"] + "|" + emp[str(t[0][1])]["first"] + "|" + str(t[1]) + "|" + t[0][2]
+for x, t in tally.items():
+    print("$Salon" + "|" + emp[str(x[1])]["last"] + "|" + emp[str(x[1])]["first"] + "|" + str(t) + "|" + x[2])
 
 EOF
 
