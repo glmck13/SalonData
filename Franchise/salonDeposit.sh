@@ -61,7 +61,13 @@ do
 
 	CASH=0 CHARGE=0
 
+	tries=3
+	while [ "$tries" -gt 0 ]; do
 	curl -s -H "Auth-Type: Bearer" -H "Authorization: Bearer $token" https://spectrum.salondata.com/rest/storeconfig/dailytendersummary?storeConfig=$S\&date=$Y-$M-$D >$TMPFILE.json
+	[ "$(wc -c <$TMPFILE.json)" -gt 1024 ] && break
+	let tries=$tries-1
+	sleep 3
+	done
 
 	eval $(
 	python <<-EOF
@@ -87,7 +93,7 @@ do
 	MESSAGE+=":${CASH},"
 
 	if [ "$CASH" -gt 0 ]; then
-	# cat <<-EOF
+	#cat >>$TMPFILE.qbo <<-EOF
 	qbo.sh POST '/company/$QBO_REALMID/deposit' >>$TMPFILE.qbo <<-EOF
 	{
 	"DepositToAccountRef": { "value": "$ABV", "name": "$ABN" },
@@ -113,7 +119,7 @@ do
 	MESSAGE+=":${CHARGE},"
 
 	if [ "$CHARGE" -gt 0 ]; then
-	# cat <<-EOF
+	#cat >>$TMPFILE.qbo <<-EOF
 	qbo.sh POST '/company/$QBO_REALMID/deposit' >>$TMPFILE.qbo <<-EOF
 	{
 	"DepositToAccountRef": { "value": "$ABV", "name": "$ABN" },
