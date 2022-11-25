@@ -58,7 +58,7 @@ eval $Name="$Value"
 MESSAGE="STORE:CASH:CHARGE:TIPS\r"
 typeset -F2 CASH CHARGE TIPS
 
-TIPCMD=/tmp/qbopurchase-cmd.json TIPRSP=/tmp/qbopurchase-rsp.json
+TIPCMD=/tmp/qbopurchase-cmd.json TIPRSP=/tmp/qbopurchase-rsp.json TIPCOUNT=0
 cat - >$TIPCMD <<-EOF
 {
 "PaymentType": "Check", 
@@ -83,7 +83,7 @@ do
 	tries=3
 	while [ "$tries" -gt 0 ]; do
 	curl -s -H "Auth-Type: Bearer" -H "Authorization: Bearer $token" https://reports.salondata.com/rest/tipexport?storeConfig=$S\&date=$Y-$M-$D >$TMPFILE-salontips.json
-	[ "$(wc -c <$TMPFILE-salontips.json)" -gt 1024 ] && break
+	[ "$(wc -c <$TMPFILE-salontips.json)" -gt 100 ] && break
 	let tries=$tries-1
 	sleep 3
 	done
@@ -96,7 +96,9 @@ do
 	EOF
 	)
 
-	[ "$n" -gt 0 ] && print "," >>$TIPCMD
+	if [ "$TIPS" -gt 0 ]; then
+	[ "$TIPCOUNT" -gt 0 ] && print "," >>$TIPCMD
+	let TIPCOUNT=$TIPCOUNT+1
 	cat - >>$TIPCMD <<-EOF
 	{
 	"DetailType": "AccountBasedExpenseLineDetail", 
@@ -108,11 +110,12 @@ do
 	}
 	}
 	EOF
+	fi
 
 	tries=3
 	while [ "$tries" -gt 0 ]; do
 	curl -s -H "Auth-Type: Bearer" -H "Authorization: Bearer $token" https://spectrum.salondata.com/rest/storeconfig/dailytendersummary?storeConfig=$S\&date=$Y-$M-$D >$TMPFILE-salontender.json
-	[ "$(wc -c <$TMPFILE-salontender.json)" -gt 1024 ] && break
+	[ "$(wc -c <$TMPFILE-salontender.json)" -gt 100 ] && break
 	let tries=$tries-1
 	sleep 3
 	done
@@ -195,9 +198,9 @@ do
 done
 
 print "]\n}" >>$TIPCMD
-qbo.sh POST '/company/$QBO_REALMID/purchase' <$TIPCMD >$TIPRSP
+[ "$TIPCOUNT" -gt 0 ] && qbo.sh POST '/company/$QBO_REALMID/purchase' <$TIPCMD >$TIPRSP
 
 SUBJECT="Salon Deposits for $M/$D/$Y"
 
-echo "$EMAIL" "$SUBJECT" "$MESSAGE"
+#echo "$EMAIL" "$SUBJECT" "$MESSAGE"
 sendaway.sh "$EMAIL" "$SUBJECT" "$MESSAGE"
