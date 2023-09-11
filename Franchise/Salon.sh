@@ -10,7 +10,7 @@ print "DATE|CUSTOMER|STORE|INVOICE|COUNT|ITEM|DESCRIPTION|SHIPPED|BACK-ORDER|PRI
 TALLYCSV="${1%.*}-tally.txt"
 print "DATE|CUSTOMER|STORE|INVOICE|BACKBAR|RETAIL|CLOTHING|SUB-TOTAL|FREIGHT|RETURNS|SALES-TAX|ORDERED-BY" >$TALLYCSV
 
-sed -e "/ DATE:| CUSTOMER #:| DOCUMENT #:| each | Each | EACH | PACK | CS[0-9][0-9]* | BACKBAR:| RETAIL: | FREIGHT:| SALES TAX:| SUB-TOTAL:| RETURN ALLOW:|Maryland Clips,|^ \{38,50\}[^ ]/p" |
+grep -E -A1 " DATE:| CUSTOMER #:| DOCUMENT #:| each | Each [0-9]| EACH | PACK | CS[0-9][0-9]* | BACKBAR:| RETAIL: | FREIGHT:| SALES TAX:| ORDERED BY | TOTAL:| SUB-TOTAL:| RETURN ALLOW:|Bay Clips,|^ \{38,50\}[^ ]" |
 	sed \
 	-e "s/^ \{38,50\}\([^ ].*\)/@DESC: \1/" \
 	-e "s/ \*$/X/g" \
@@ -19,7 +19,7 @@ sed -e "/ DATE:| CUSTOMER #:| DOCUMENT #:| each | Each | EACH | PACK | CS[0-9][0
 	-e "s/.*DOCUMENT #:/@INVOICE:/" \
 	-e "s/.*DATE:/@DATE:/" \
 	-e "s/.*CUSTOMER #:/@CUSTOMER:/" \
-	-e "/Maryland Clips,/s/.*Clips -/@STORE: /" \
+	-e "/Bay Clips,/s/.*Clips -/@STORE: /" \
 	-e "/ each /s/^/@ITEM: /" \
 	-e "/ Each /s/^/@ITEM: /" \
 	-e "/ EACH /s/^/@ITEM: /" \
@@ -95,7 +95,7 @@ do
 		TAX=${line#*: }
 		;;
 	ORDERED\ BY\ *)
-		read line; line=${line% UPS GROUND *} line=${line% *}
+		read line; line=${line% UPS GROUND *} line=${line% DO NOT SHIP *} line=${line% *}
 		ORDERED=${line}
 		;;
 	@TOTAL:*)
