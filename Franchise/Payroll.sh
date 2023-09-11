@@ -70,7 +70,7 @@ do
 	do
 		field=${loop%%,*} loop=${loop#*,}
 		if [ "$field" = "Co Code" ]; then
-			val=${line%%,*} line=${line#*,} lval="$val"
+			val=${line%%,*} line=${line#*,}
 			if [ "$code" != "$val" ]; then
 				code=$val
 				outfile=$Class-$code-$WeekHi.csv
@@ -80,14 +80,14 @@ do
 			fi
 			echo -n "$val" >>$outfile
 		elif [ "$field" = "Batch Id" ]; then
-			val=${line%%,*} line=${line#*,} lval="$val"
+			val=${line%%,*} line=${line#*,}
 			echo -n ",$Salon" >>$outfile
 		elif [ "$field" = "Batch Description" ]; then
 			echo -n ",$Salon" >>$outfile
 		elif [ "$field" = "Employee Name" ]; then
-			echo -n ",\"${emptab[$lval]}\"" >>$outfile
+			echo -n ",\"${emptab[$val]}\"" >>$outfile
 		else
-			val=${line%%,*} line=${line#*,} lval="$val"
+			val=${line%%,*} line=${line#*,}
 			echo -n ",$val" >>$outfile
 		fi
 	done
